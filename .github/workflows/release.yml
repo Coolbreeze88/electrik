@@ -1,0 +1,29 @@
+# Pousser un tag (ex. git tag v0.1.0 && git push --tags) construit l'installateur et publie la release GitHub.
+# Signature (facultative) : secrets CSC_LINK (certificat .pfx en base64) et CSC_KEY_PASSWORD, lus par electron-builder.
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm test
+      - run: npm run dist
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      # latest.yml et le blockmap servent aux mises à jour automatiques (présents si "publish" est configuré).
+      - run: |
+          shopt -s nullglob
+          gh release create "${{ github.ref_name }}" release/*.exe release/*.blockmap release/latest.yml --generate-notes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}

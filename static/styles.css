@@ -1,0 +1,113 @@
+* { box-sizing: border-box; }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column; font: 13px "Segoe UI", sans-serif; background: #f3f3f3; color: #222; }
+header { display: flex; gap: 6px; align-items: center; padding: 6px 10px; background: #fff; border-bottom: 1px solid #ccc; }
+#file { margin-left: auto; color: #666; }
+main { flex: 1; display: flex; min-height: 0; }
+aside { width: 520px; overflow: auto; padding: 10px; border-right: 1px solid #ccc; }
+#sheet { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #fff; }
+#tabs { display: flex; gap: 2px; padding: 6px 10px 0; border-bottom: 1px solid #ccc; }
+#tabs button { border: 1px solid #ccc; border-bottom: none; background: #eee; padding: 4px 10px; }
+#tabs button.on { background: #fff; font-weight: 600; }
+#view-head:not(:empty) { padding: 6px 10px; border-bottom: 1px solid #eee; }
+#view-body { flex: 1; overflow: auto; padding: 10px; display: flex; gap: 10px; align-items: flex-start; }
+.pages { display: flex; flex-direction: column; gap: 16px; }
+.pages svg { border: 1px solid #ccc; }
+.plan-img { flex: 1; min-width: 0; }
+.plan-img svg { width: 100%; height: auto; cursor: crosshair; }
+.palette { width: 270px; flex-shrink: 0; position: sticky; top: 0; }
+.palette ul { list-style: none; padding: 0; margin: 0; }
+.palette li { padding: 3px 6px; cursor: pointer; border-radius: 3px; }
+.palette li:hover { background: #eef4fb; }
+.palette li.done { color: #2a7a2a; }
+.palette li.sel, .mark.sel text { background: #ffd54f; fill: #c00; }
+.hint { color: #666; font-size: 12px; }
+
+fieldset { border: 1px solid #ccc; border-radius: 4px; margin: 0 0 8px; padding: 6px 8px; background: #fff; }
+fieldset.rcd { background: #eef4fb; }
+legend { font-weight: 600; }
+label { display: inline-block; margin: 2px 6px 2px 0; }
+input { width: 9em; }
+input[type=number] { width: 4.5em; }
+select { max-width: 13em; }
+ol { list-style: none; padding: 0; margin: 4px 0; }
+#editor li { margin: 2px 0; display: flex; gap: 4px; align-items: center; }
+#editor li label { margin: 0; }
+#editor li select { width: 11em; }
+#editor li input:not([type]) { width: 6em; }
+#editor li input[type=number] { width: 3.5em; }
+button { cursor: pointer; }
+legend button { font-size: 11px; }
+#warnings { margin: 0 0 8px; padding: 0; list-style: none; }
+#warnings li { background: #fff3cd; border: 1px solid #e0c060; padding: 4px 6px; border-radius: 3px; }
+dialog { max-width: 760px; max-height: 85vh; overflow: auto; }
+dialog h3 { margin-bottom: 4px; }
+
+.pages svg, .plan-img svg { width: 100%; height: auto; max-width: 1400px; background: #fff; box-shadow: 0 1px 4px #0003; }
+input.short { width: 3em; }
+input.short2 { width: 4.5em; }
+#editor li input.room { width: 6em; }
+#editor h4 { margin: 10px 0 4px; }
+fieldset.board { background: #f6f1fb; }
+#lang { margin-left: 8px; }
+.report { padding: 0 10px; max-width: 1100px; }
+.report table { border-collapse: collapse; width: 100%; margin-bottom: 12px; }
+.report th, .report td { border: 1px solid #ddd; padding: 3px 6px; text-align: left; }
+.report th { background: #f3f3f3; }
+.report td.num { text-align: right; }
+.report tr.bad td { background: #fdecea; }
+.measures label { margin-right: 12px; }
+.measures input:not(.short2) { width: 14em; }
+.rcd-test { display: inline-block; margin-right: 14px; white-space: nowrap; }
+svg.sheet rect.label { stroke-width: 0.6; stroke-dasharray: 4 3; }
+img.logo { max-height: 32px; max-width: 120px; vertical-align: middle; border: 1px solid #ddd; }
+.tools { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.tools button.on { background: #1565c0; color: #fff; border-color: #1565c0; }
+.tools .sep { flex: 1; }
+#view-head .hint { margin: 4px 0 0; }
+
+svg.sheet path:not(.link-hit), svg.sheet line, svg.sheet circle, svg.sheet ellipse, svg.sheet rect { fill: none; stroke: #000; stroke-width: 1.2; }
+svg.sheet .links path.link { stroke-width: inherit; stroke: #333; }
+svg.sheet path.link-hit { fill: none; stroke: transparent; }
+#loads:empty { display: none; }
+#loads { margin: 0 0 8px; padding: 4px 6px; background: #eef4fb; border-radius: 3px; }
+svg.sheet .thin, svg.sheet .thin line { stroke: #666; stroke-width: 0.5; }
+svg.sheet .frame { stroke-width: 0.9; }
+svg.sheet .ref { font-size: 7px; fill: #777; }
+
+/* Cartouche : traits fins, étiquettes discrètes, valeurs lisibles. */
+svg.sheet .cart line, svg.sheet .cart rect { stroke: #888; stroke-width: 0.5; }
+svg.sheet .cart .ct-out { stroke: #000; stroke-width: 0.9; }
+svg.sheet .ct-l { font-size: 6.5px; fill: #888; letter-spacing: 0.6px; }
+svg.sheet .ct-v { font-size: 9px; font-weight: 300; fill: #222; }
+svg.sheet .ct-b { font-weight: 600; }
+svg.sheet .ct-t { font-size: 13px; font-weight: 600; fill: #111; }
+
+/* Dessin des plans. */
+svg.sheet polyline { fill: none; stroke: #000; stroke-linejoin: miter; stroke-linecap: square; }
+svg.sheet polyline.mask { stroke: #fff; stroke-linecap: butt; }
+svg.sheet .shapes path { stroke-width: inherit; }
+svg.sheet polyline.preview { stroke: #1565c0; stroke-dasharray: 8 6; stroke-linecap: round; }
+svg.sheet path.grid { stroke: #e4e4e4; stroke-width: 1; }
+svg.sheet .fill { fill: #000; }
+svg.sheet .hit { stroke: none; fill: transparent; }
+svg.sheet .mark { cursor: pointer; }
+svg.sheet .mark.sel path, svg.sheet .mark.sel circle, svg.sheet .mark.sel rect:not(.hit) { stroke: #c00; }
+svg.sheet text { font: 11px "Segoe UI", sans-serif; }
+svg.sheet .bold { font-weight: 600; }
+svg.sheet .u { text-decoration: underline; }
+svg.sheet .small { font-size: 9px; }
+svg.sheet .mid, svg.sheet .sym { text-anchor: middle; }
+svg.sheet .end { text-anchor: end; }
+svg.sheet .sym { font-size: 8px; }
+/* Symboles pivotés sur l'unifilaire vertical : le texte interne reste lisible. */
+svg.sheet .rot .sym { transform-box: fill-box; transform-origin: center; transform: rotate(90deg); }
+
+#print { display: none; }
+@page { size: A4 landscape; margin: 0; }
+@media print {
+  body > *:not(#print) { display: none !important; }
+  body { display: block; height: auto; background: #fff; }
+  #print { display: block; }
+  .page { break-after: page; }
+  .page svg { display: block; width: 297mm; height: 209mm; box-shadow: none; }
+}

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; img-src 'self' data: blob:">
+  <title>Electrik</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <button data-cmd="new" data-t="Nouveau">Nouveau</button>
+    <button data-cmd="open" title="Ctrl+O" data-t="Ouvrir">Ouvrir</button>
+    <button data-cmd="save" title="Ctrl+S" data-t="Enregistrer">Enregistrer</button>
+    <button data-cmd="saveAs" title="Ctrl+Maj+S" data-t="Enregistrer sous">Enregistrer sous</button>
+    <button data-cmd="pdf" data-t="Exporter en PDF">Exporter en PDF</button>
+    <button data-cmd="help" data-t="Aide RGIE">Aide RGIE</button>
+    <span id="file"></span>
+    <select id="lang" aria-label="Langue / Taal">
+      <option value="fr">FR</option>
+      <option value="nl">NL</option>
+    </select>
+  </header>
+  <main>
+    <aside>
+      <p id="loads"></p>
+      <ul id="warnings" aria-live="polite"></ul>
+      <div id="editor"></div>
+    </aside>
+    <section id="sheet">
+      <nav id="tabs"></nav>
+      <div id="view-head"></div>
+      <div id="view-body"></div>
+    </section>
+  </main>
+  <input type="file" id="plan-file" accept="image/png,image/jpeg,image/webp,application/pdf,.dxf" hidden>
+  <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp" hidden>
+  <datalist id="rooms"></datalist>
+  <div id="print"></div>
+
+  <dialog id="help">
+    <div lang="fr">
+      <h2>Aide RGIE / AREI – habitations (Livre 1)</h2>
+      <p class="hint">Résumé indicatif pour aider à la conception. Il ne remplace pas le texte officiel du RGIE (SPF Économie)
+        ni le contrôle de conformité par un organisme agréé. Vérifiez toujours la version en vigueur.</p>
+
+      <h3>Documents à fournir au contrôle</h3>
+      <ul>
+        <li>Schéma unifilaire : chaque circuit repéré par une lettre, chaque point par un numéro (A1, A2…), avec calibres, sections et différentiels.</li>
+        <li>Plan de position : l'emplacement de chaque point repéré avec le même numéro que sur l'unifilaire.</li>
+        <li>Les deux documents doivent correspondre à l'installation réelle.</li>
+      </ul>
+
+      <h3>Circuits</h3>
+      <ul>
+        <li>Calibre maximal du disjoncteur selon la section (cuivre, pose courante) : 1,5 mm² → 16 A ; 2,5 mm² → 20 A ; 4 mm² → 25 A ; 6 mm² → 40 A ; 10 mm² → 63 A.</li>
+        <li>En pratique : éclairage en 1,5 mm² (10 ou 16 A), prises en 2,5 mm² (16 ou 20 A), taque ou cuisinière en 6 mm² (32 A).</li>
+        <li>8 points de prises au maximum par circuit (une prise double ou triple compte pour un point).</li>
+        <li>Les appareils fixes de forte puissance (taque, four, lave-linge, sèche-linge, boiler, borne VE, pompe à chaleur) sont normalement alimentés par un circuit dédié.</li>
+        <li>Chute de tension : Electrik estime la longueur depuis le plan et signale au-delà de 5 % (valeur indicative).</li>
+      </ul>
+
+      <h3>Protection différentielle</h3>
+      <ul>
+        <li>Un différentiel général de 300 mA en tête de l'installation.</li>
+        <li>Un différentiel de 30 mA pour les circuits des salles de bain et douches, ainsi que pour les lave-linge, sèche-linge et lave-vaisselle.</li>
+        <li>Le type de différentiel (A, B…) dépend des appareils : suivez les prescriptions du fabricant, notamment pour les onduleurs et les bornes de recharge.</li>
+        <li>Essai : le différentiel doit déclencher au plus à sa sensibilité nominale (IΔn).</li>
+      </ul>
+
+      <h3>Mise à la terre et liaisons équipotentielles</h3>
+      <ul>
+        <li>La résistance de dispersion de la prise de terre doit rester sous la limite imposée (30 Ω avec un différentiel général de 300 mA). Au-delà, des mesures supplémentaires sont nécessaires.</li>
+        <li>Liaison équipotentielle principale (eau, gaz, chauffage, structure) et liaisons supplémentaires dans les salles de bain.</li>
+      </ul>
+
+      <h3>Salles de bain</h3>
+      <ul>
+        <li>Matériel adapté au volume (0, 1, 2…) avec un indice IP suffisant. Prises interdites dans les volumes proches de la baignoire ou de la douche.</li>
+      </ul>
+
+      <h3>Photovoltaïque et stockage</h3>
+      <ul>
+        <li>Bonne pratique : raccorder l'onduleur sur un circuit dédié avec sa propre protection, sans prise ni éclairage. La sensibilité et le type du différentiel (A ou B) dépendent de l'onduleur : suivez la notice du fabricant.</li>
+        <li>Un dispositif de coupure DC (sectionneur) près de l'onduleur, plus une signalétique au tableau et au compteur indiquant la présence d'une production décentralisée.</li>
+        <li>Ces points varient selon la version de l'AREI (modifiée en 2023) : vérifiez le texte consolidé sur le site du SPF Économie.</li>
+        <li>Déclarer l'installation au gestionnaire de réseau et la faire contrôler avant la mise en service.</li>
+        <li>Batteries et bornes de recharge : respecter les prescriptions du fabricant et prévoir un circuit dédié.</li>
+      </ul>
+    </div>
+
+    <div lang="nl" hidden>
+      <h2>Hulp AREI – woningen (Boek 1)</h2>
+      <p class="hint">Indicatieve samenvatting als hulp bij het ontwerp. Ze vervangt noch de officiële tekst van het AREI (FOD Economie)
+        noch de conformiteitskeuring door een erkend organisme. Controleer altijd de geldende versie.</p>
+
+      <h3>Documenten voor de keuring</h3>
+      <ul>
+        <li>Eendraadschema: elke kring aangeduid met een letter, elk punt met een nummer (A1, A2…), met kalibers, secties en differentieelschakelaars.</li>
+        <li>Situatieschema: de plaats van elk punt met hetzelfde nummer als op het eendraadschema.</li>
+        <li>Beide documenten moeten overeenkomen met de werkelijke installatie.</li>
+      </ul>
+
+      <h3>Kringen</h3>
+      <ul>
+        <li>Maximaal kaliber van de automaat volgens de sectie (koper, gangbare plaatsing): 1,5 mm² → 16 A; 2,5 mm² → 20 A; 4 mm² → 25 A; 6 mm² → 40 A; 10 mm² → 63 A.</li>
+        <li>In de praktijk: verlichting in 1,5 mm² (10 of 16 A), stopcontacten in 2,5 mm² (16 of 20 A), kookplaat of fornuis in 6 mm² (32 A).</li>
+        <li>Maximaal 8 stopcontactpunten per kring (een dubbel of driedubbel stopcontact telt als één punt).</li>
+        <li>Vaste toestellen met groot vermogen (kookplaat, oven, wasmachine, droogkast, boiler, laadpaal, warmtepomp) krijgen normaal een aparte kring.</li>
+        <li>Spanningsval: Electrik schat de lengte op basis van het plan en waarschuwt boven 5 % (indicatieve waarde).</li>
+      </ul>
+
+      <h3>Differentieelbeveiliging</h3>
+      <ul>
+        <li>Een hoofddifferentieel van 300 mA aan het begin van de installatie.</li>
+        <li>Een differentieel van 30 mA voor de kringen van badkamers en douches, en voor wasmachines, droogkasten en vaatwassers.</li>
+        <li>Het type differentieel (A, B…) hangt af van de toestellen: volg de voorschriften van de fabrikant, vooral voor omvormers en laadpalen.</li>
+        <li>Test: de differentieelschakelaar moet uitschakelen bij ten hoogste zijn nominale gevoeligheid (IΔn).</li>
+      </ul>
+
+      <h3>Aarding en equipotentiaalverbindingen</h3>
+      <ul>
+        <li>De spreidingsweerstand van de aardverbinding moet onder de opgelegde grens blijven (30 Ω met een hoofddifferentieel van 300 mA). Daarboven zijn bijkomende maatregelen nodig.</li>
+        <li>Hoofdequipotentiaalverbinding (water, gas, verwarming, structuur) en bijkomende verbindingen in badkamers.</li>
+      </ul>
+
+      <h3>Badkamers</h3>
+      <ul>
+        <li>Materieel aangepast aan het volume (0, 1, 2…) met een voldoende IP-graad. Stopcontacten verboden in de volumes dicht bij bad of douche.</li>
+      </ul>
+
+      <h3>Zonnepanelen en opslag</h3>
+      <ul>
+        <li>Goede praktijk: de omvormer aansluiten op een aparte kring met eigen beveiliging, zonder stopcontacten of verlichting. Gevoeligheid en type van het differentieel (A of B) hangen af van de omvormer: volg de handleiding van de fabrikant.</li>
+        <li>Een DC-scheider bij de omvormer, en signalisatie aan het verdeelbord en de teller die de aanwezigheid van decentrale productie aangeeft.</li>
+        <li>Deze punten verschillen volgens de versie van het AREI (gewijzigd in 2023): controleer de gecoördineerde tekst op de website van de FOD Economie.</li>
+        <li>De installatie melden aan de netbeheerder en laten keuren vóór de ingebruikname.</li>
+        <li>Batterijen en laadpalen: volg de voorschriften van de fabrikant en voorzie een aparte kring.</li>
+      </ul>
+    </div>
+    <form method="dialog"><button data-t="Fermer">Fermer</button></form>
+  </dialog>
+
+  <script type="module" src="../dist/app.js"></script>
+</body>
+</html>

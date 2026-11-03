@@ -1,0 +1,59 @@
+{
+  "name": "electrik",
+  "version": "0.1.0",
+  "description": "Schémas unifilaires électriques (RGIE/AREI) – logiciel libre pour Windows",
+  "author": "Nicolas Albrecht",
+  "license": "GPL-3.0-only",
+  "repository": "github:Coolbreeze88/electrik",
+  "homepage": "https://github.com/Coolbreeze88/electrik",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "tsc && electron .",
+    "test": "tsc && node --test dist/schema.test.js",
+    "dist": "tsc && electron-builder --win nsis --publish never"
+  },
+  "build": {
+    "appId": "be.electrik.app",
+    "productName": "Electrik",
+    "files": [
+      "dist/**/*",
+      "!dist/*.test.js",
+      "static/**/*",
+      "!node_modules/pdfjs-dist/{web,legacy,image_decoders,types}/**",
+      "!**/*.map"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Coolbreeze88",
+        "repo": "electrik"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "static/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Electrik"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "dxf-parser": "^1.1.2",
+    "electron-updater": "^6.8.11",
+    "pdfjs-dist": "^6.5.438"
+  }
+}
