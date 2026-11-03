@@ -39,6 +39,7 @@
     },
     "nsis": {
       "oneClick": false,
+      "artifactName": "${productName}-Setup-${version}.${ext}",
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,

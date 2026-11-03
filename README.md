@@ -32,7 +32,7 @@ On décrit le tableau dans le panneau de gauche (différentiels, circuits, point
 
 ## Installer
 
-Télécharger `Electrik Setup x.y.z.exe` dans les [Releases](https://github.com/Coolbreeze88/electrik/releases) et le lancer.
+Télécharger `Electrik-Setup-x.y.z.exe` dans les [Releases](https://github.com/Coolbreeze88/electrik/releases) et le lancer.
 
 L'installateur n'est pas encore signé : au premier lancement, Windows affiche « Windows a protégé votre ordinateur ». Cliquer sur **Informations complémentaires** puis **Exécuter quand même**. L'installation ne demande pas de droits administrateur et l'application se met ensuite à jour toute seule.
 
