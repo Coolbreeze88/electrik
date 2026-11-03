@@ -80,7 +80,8 @@ app.whenReady().then(() => {
   });
 
   // Mises à jour depuis les releases GitHub (inactif tant que "publish" n'est pas configuré dans package.json).
-  if (app.isPackaged) updater.autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+  // La version Microsoft Store est mise à jour par le Store.
+  if (app.isPackaged && !process.windowsStore) updater.autoUpdater.checkForUpdatesAndNotify().catch(() => {});
 });
 
 app.on('window-all-closed', () => app.quit());

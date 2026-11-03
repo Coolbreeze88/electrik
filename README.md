@@ -32,9 +32,11 @@ On décrit le tableau dans le panneau de gauche (différentiels, circuits, point
 
 ## Installer
 
-Télécharger `Electrik-Setup-x.y.z.exe` dans les [Releases](https://github.com/Coolbreeze88/electrik/releases) et le lancer.
+- **Microsoft Store** (recommandé, en cours de publication) : rechercher « Electrik » dans le Store. Mises à jour automatiques par le Store.
+- **winget** : `winget install Coolbreeze88.Electrik`
+- **Installateur** : télécharger `Electrik-Setup-x.y.z.exe` dans les [Releases](https://github.com/Coolbreeze88/electrik/releases). Il n'est pas signé : au premier lancement, Windows affiche « Windows a protégé votre ordinateur » ; cliquer sur **Informations complémentaires** puis **Exécuter quand même**.
 
-L'installateur n'est pas encore signé : au premier lancement, Windows affiche « Windows a protégé votre ordinateur ». Cliquer sur **Informations complémentaires** puis **Exécuter quand même**. L'installation ne demande pas de droits administrateur et l'application se met ensuite à jour toute seule.
+Aucune installation ne demande de droits administrateur. [Confidentialité](PRIVACY.md) : aucune donnée n'est collectée.
 
 ## Développer
 
@@ -45,6 +47,8 @@ npm install
 npm start      # lance l'application
 npm test       # tests
 npm run dist   # crée l'installateur dans release/
+npm run store  # crée le paquet Microsoft Store (.appx) dans release/
+npm run icons  # régénère les icônes depuis static/icon.svg
 ```
 
 | Fichier | Rôle |
@@ -59,11 +63,11 @@ npm run dist   # crée l'installateur dans release/
 
 ### Publier une version
 
-`git tag v0.1.0 && git push --tags` : GitHub Actions lance les tests, construit l'installateur et crée la release.
+1. Changer `version` dans `package.json`, committer et pousser.
+2. `git tag vX.Y.Z && git push origin vX.Y.Z` : GitHub Actions lance les tests, construit l'installateur, crée la release (avec `latest.yml` pour les mises à jour automatiques) et ouvre la pull request winget.
+3. `npm run store`, puis envoyer `release/Electrik X.Y.Z.appx` dans une nouvelle soumission sur [Partner Center](https://partner.microsoft.com/dashboard).
 
-**Mises à jour automatiques** : l'application vérifie au démarrage les releases GitHub du dépôt déclaré dans `package.json` (`build.publish`).
-
-**Signature de l'installateur** (évite l'avertissement « éditeur inconnu » de Windows) : acheter un certificat de signature de code, puis l'ajouter aux secrets du dépôt GitHub `CSC_LINK` (fichier .pfx encodé en base64) et `CSC_KEY_PASSWORD`. Le workflow les utilise automatiquement.
+Les manifestes de la première soumission winget sont dans [winget/](winget/).
 
 Les contributions sont bienvenues : nouveaux symboles, règles RGIE, traduction en allemand.
 

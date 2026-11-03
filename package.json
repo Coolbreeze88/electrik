@@ -11,7 +11,9 @@
   "scripts": {
     "start": "tsc && electron .",
     "test": "tsc && node --test dist/schema.test.js",
-    "dist": "tsc && electron-builder --win nsis --publish never"
+    "dist": "tsc && electron-builder --win nsis --publish never",
+    "store": "tsc && electron-builder --win appx --publish never",
+    "icons": "electron scripts/icons.mjs"
   },
   "build": {
     "appId": "be.electrik.app",
@@ -36,6 +38,15 @@
     "win": {
       "target": "nsis",
       "icon": "static/icon.png"
+    },
+    "appx": {
+      "identityName": "A-REMPLACER.Electrik",
+      "publisher": "CN=A-REMPLACER",
+      "publisherDisplayName": "A-REMPLACER",
+      "applicationId": "Electrik",
+      "displayName": "Electrik",
+      "backgroundColor": "#1565c0",
+      "languages": ["fr-BE", "nl-BE"]
     },
     "nsis": {
       "oneClick": false,
